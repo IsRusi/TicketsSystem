@@ -10,11 +10,6 @@ namespace Exam
     {
         public TicketSystem()
         {
-
-            DatabaseConnection connection =new();
-            connection.OpenConnection();
-            MessageBox.Show("works");
-            connection.CloseConnection();
             InitializeComponent();
         }
 

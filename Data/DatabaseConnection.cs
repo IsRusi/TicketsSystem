@@ -10,6 +10,7 @@ namespace Exam.Data
 {
     internal class DatabaseConnection
     {
+        private const string path= "O:\\programming\\Exam Project\\C#\\Exam\\keys\\";
         private string connectionString;
         private static NpgsqlConnection databaseConnection=new();
         public DatabaseConnection()
@@ -20,7 +21,7 @@ namespace Exam.Data
         {
             try
             {
-
+                connectionString=JsonsReader.ReadJsonFile(path);
                 databaseConnection.ConnectionString = connectionString;
                 databaseConnection.Open();
             }
