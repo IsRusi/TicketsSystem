@@ -137,6 +137,7 @@
             // 
             // pictureLogin
             // 
+            pictureLogin.Cursor = Cursors.Hand;
             pictureLogin.Image = Properties.Resources.login_icon;
             pictureLogin.ImageLocation = "";
             pictureLogin.InitialImage = null;
@@ -146,6 +147,7 @@
             pictureLogin.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureLogin.TabIndex = 0;
             pictureLogin.TabStop = false;
+            pictureLogin.Click += pictureLogin_Click;
             // 
             // TicketSystem
             // 

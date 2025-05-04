@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 using Exam.Data;
+using Exam.Forms;
 namespace Exam
 {
     public partial class TicketSystem : Form
@@ -42,7 +43,13 @@ namespace Exam
         private void dateTimePicker1_ChangeUICues(object sender, UICuesEventArgs e)
         {
             dateTimePicker1.Format = DateTimePickerFormat.Short;
-            dateTimePicker1.CustomFormat=null;
+            dateTimePicker1.CustomFormat = null;
+        }
+
+        private void pictureLogin_Click(object sender, EventArgs e)
+        {
+            LoginForm loginForm=new();
+            loginForm.ShowDialog();
         }
     }
 }
