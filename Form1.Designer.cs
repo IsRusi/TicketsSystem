@@ -35,7 +35,12 @@
             labelFrom = new Label();
             labelWhere = new Label();
             panelSearchRouteBar = new Panel();
+            labelDate = new Label();
+            panel1 = new Panel();
+            pictureLogin = new PictureBox();
             panelSearchRouteBar.SuspendLayout();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureLogin).BeginInit();
             SuspendLayout();
             // 
             // textBoxFrom
@@ -84,44 +89,77 @@
             labelFrom.AutoSize = true;
             labelFrom.Location = new Point(5, 0);
             labelFrom.Name = "labelFrom";
-            labelFrom.Size = new Size(67, 25);
+            labelFrom.Size = new Size(70, 25);
             labelFrom.TabIndex = 3;
-            labelFrom.Text = "откуда";
+            labelFrom.Text = "Откуда";
             // 
             // labelWhere
             // 
             labelWhere.AutoSize = true;
             labelWhere.Location = new Point(275, 0);
             labelWhere.Name = "labelWhere";
-            labelWhere.Size = new Size(49, 25);
+            labelWhere.Size = new Size(50, 25);
             labelWhere.TabIndex = 3;
-            labelWhere.Text = "куда";
+            labelWhere.Text = "Куда";
             // 
             // panelSearchRouteBar
             // 
             panelSearchRouteBar.BackColor = SystemColors.ScrollBar;
             panelSearchRouteBar.BorderStyle = BorderStyle.Fixed3D;
+            panelSearchRouteBar.Controls.Add(labelDate);
             panelSearchRouteBar.Controls.Add(labelWhere);
             panelSearchRouteBar.Controls.Add(labelFrom);
             panelSearchRouteBar.Controls.Add(searchRouteButton);
             panelSearchRouteBar.Controls.Add(dateTimePicker1);
             panelSearchRouteBar.Controls.Add(textBoxWhere);
             panelSearchRouteBar.Controls.Add(textBoxFrom);
-            panelSearchRouteBar.Location = new Point(44, 90);
+            panelSearchRouteBar.Location = new Point(44, 72);
             panelSearchRouteBar.Name = "panelSearchRouteBar";
-            panelSearchRouteBar.Size = new Size(795, 78);
+            panelSearchRouteBar.Size = new Size(831, 78);
             panelSearchRouteBar.TabIndex = 4;
+            // 
+            // labelDate
+            // 
+            labelDate.AutoSize = true;
+            labelDate.Location = new Point(509, 0);
+            labelDate.Name = "labelDate";
+            labelDate.Size = new Size(49, 25);
+            labelDate.TabIndex = 4;
+            labelDate.Text = "Дата";
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(pictureLogin);
+            panel1.Location = new Point(8, 3);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(918, 63);
+            panel1.TabIndex = 5;
+            // 
+            // pictureLogin
+            // 
+            pictureLogin.Image = Properties.Resources.login_icon;
+            pictureLogin.ImageLocation = "";
+            pictureLogin.InitialImage = null;
+            pictureLogin.Location = new Point(876, 0);
+            pictureLogin.Name = "pictureLogin";
+            pictureLogin.Size = new Size(42, 42);
+            pictureLogin.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureLogin.TabIndex = 0;
+            pictureLogin.TabStop = false;
             // 
             // TicketSystem
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(938, 450);
+            Controls.Add(panel1);
             Controls.Add(panelSearchRouteBar);
             Name = "TicketSystem";
             Text = "Ticket System";
             panelSearchRouteBar.ResumeLayout(false);
             panelSearchRouteBar.PerformLayout();
+            panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureLogin).EndInit();
             ResumeLayout(false);
         }
 
@@ -134,5 +172,8 @@
         private Label labelFrom;
         private Label labelWhere;
         private Panel panelSearchRouteBar;
+        private Label labelDate;
+        private Panel panel1;
+        private PictureBox pictureLogin;
     }
 }
