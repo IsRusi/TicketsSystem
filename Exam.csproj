@@ -15,6 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Forms\Новая папка1\" />
+    <Folder Include="Forms\Новая папка\" />
     <Folder Include="keys\" />
   </ItemGroup>
 
