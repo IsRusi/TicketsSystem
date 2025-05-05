@@ -15,6 +15,7 @@ namespace Exam.Data
         private static NpgsqlConnection databaseConnection=new();
         public DatabaseConnection()
         {
+            connectionString = JsonsReader.ReadJsonFile(path);
         }
         public void CloseConnection() => databaseConnection.Close();
         public void OpenConnection() 

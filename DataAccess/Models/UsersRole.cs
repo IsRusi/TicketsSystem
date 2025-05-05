@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Exam.DataAccess.Models
 {
-    internal class User
+    internal class UsersRole
     {
-        public int Id { get; set; }
-        public int PassengerId{ get; set; }
-        public string PasswordHash{ get; set; }
+        public  int Id { get; set; }
+        public  int RoleId { get; set; }
+
     }
 }
