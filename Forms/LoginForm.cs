@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Exam.DataAccess.Repositories;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,10 @@ namespace Exam.Forms
         public LoginForm()
         {
             InitializeComponent();
+        }
+
+        private void buttonEnterToAccount_Click(object sender, EventArgs e)
+        {
         }
     }
 }
