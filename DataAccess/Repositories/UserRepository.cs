@@ -41,7 +41,6 @@ namespace Exam.DataAccess.Repositories
                     };
                 }
             }
-            MessageBox.Show($"{user is null}");
             dataBaseConnection.CloseConnection();
         return user;
         }
