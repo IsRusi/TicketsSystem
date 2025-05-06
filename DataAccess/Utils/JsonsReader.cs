@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Exam.Data
+namespace Exam.DataAccess.Utils
 {
     public class JsonsReader
     {
@@ -16,7 +16,7 @@ namespace Exam.Data
        .SetBasePath(path)
        .AddJsonFile("appconfig.json")
        .Build();
-            return config.GetConnectionString("Default");
+            return config.GetConnectionString("DefaultConnection");
         }
     }
 }
