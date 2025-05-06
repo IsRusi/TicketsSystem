@@ -10,6 +10,7 @@ using Npgsql;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Exam.DataAccess.Models;
 using System.CodeDom;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 namespace Exam.DataAccess.Repositories
 {
 
@@ -43,6 +44,24 @@ namespace Exam.DataAccess.Repositories
             MessageBox.Show($"{user is null}");
             dataBaseConnection.CloseConnection();
         return user;
+        }
+        public void AddPassanger(Passenger passenger)
+        {
+            dataBaseConnection.OpenConnection();
+            commands.Connection = dataBaseConnection.GetConnection();
+            commands.CommandText = @"insert into passenger(first_name,second_name,middle_name,email,phone,document_number,gender,birth_date) values(@passenger)";
+            commands.Parameters.Clear();
+            commands.Parameters.AddWithValue("@passenger", passenger.ToString());
+            dataBaseConnection.CloseConnection();
+        }
+        public void AddUser(User user)
+        {
+            dataBaseConnection.OpenConnection();
+            commands.Connection = dataBaseConnection.GetConnection();
+            commands.CommandText = @"insert into passenger(first_name,second_name,middle_name,email,phone,document_number,gender,birth_date) values(@passenger)";
+            commands.Parameters.Clear();
+            commands.Parameters.AddWithValue("@passenger", user.ToString());
+            dataBaseConnection.CloseConnection();
         }
     }
 }

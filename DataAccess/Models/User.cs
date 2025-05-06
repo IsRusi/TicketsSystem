@@ -13,8 +13,9 @@ namespace Exam.DataAccess.Models
         public string PasswordHash{ get; set; }
         public User() { }
         public User(int id,int passengerId, string passwordHash)
-        {  Id = id; PassengerId = passengerId;PasswordHash = passwordHash;} 
+        {  Id = id; PassengerId = passengerId;PasswordHash = passwordHash;}
+        public override string ToString()=>$"{PassengerId}, '{PasswordHash}'";
+    
 
-       
     }
 }
