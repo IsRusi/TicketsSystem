@@ -3,7 +3,7 @@ using Microsoft.VisualBasic.ApplicationServices;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 using System.IO;
-using Exam.Data;
+using Exam.DataAccess;
 using Exam.Forms;
 namespace Exam
 {

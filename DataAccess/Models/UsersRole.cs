@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Exam.DataAccess.Models
 {
-    internal class UsersRole
+    public class UsersRole
     {
         public  int Id { get; set; }
-        public  int RoleId { get; set; }
+        public string RoleName { get; set; } = null;
 
     }
 }

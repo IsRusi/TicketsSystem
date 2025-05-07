@@ -2,7 +2,7 @@
 
 namespace Exam.DataAccess.Models
 {
-    public class Passenger
+    public class Passanger
     {
         public int Id { get; set; }
         public string LastName { get; set; }
@@ -13,11 +13,11 @@ namespace Exam.DataAccess.Models
         public string DocumentNumber{ get; set; }
         public string Gender{ get; set; }
         public DateTime BirthDate{ get; set; }
-        public Passenger()
+        public Passanger()
         {
 
         }
-        public Passenger(int id, string lastName, string firstName, string surname, string email, string phone, string documentNumber, string gender, DateTime birthDate)
+        public Passanger(int id, string lastName, string firstName, string surname, string email, string phone, string documentNumber, string gender, DateTime birthDate)
         {
             Id = id;
             LastName = lastName;

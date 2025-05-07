@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 
 namespace Exam.DataAccess.Utils
 {
-    internal class EncryptPassword
+    internal class CryptPassword
     {
         public static string Sha256(string inputString)
         {
@@ -20,6 +20,5 @@ namespace Exam.DataAccess.Utils
                 }
                 return hash;
             }
-
     }
 }
