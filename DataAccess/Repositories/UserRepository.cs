@@ -44,6 +44,15 @@ namespace Exam.DataAccess.Repositories
             dataBaseConnection.CloseConnection();
         return user;
         }
+        public void GetPasswordByEmail(string email)
+        {
+            dataBaseConnection.OpenConnection();
+            commands.Connection= dataBaseConnection.GetConnection();
+            commands.CommandText = "select password_hash from users join passenger on passenger.passenger_id=users.passenger_id where passenger.email=@email";
+            commands.Parameters.Clear();
+            commands.Parameters.AddWithValue("@email", email);
+            dataBaseConnection.CloseConnection();
+        }
         public void AddPassanger(Passenger passenger)
         {
             dataBaseConnection.OpenConnection();
