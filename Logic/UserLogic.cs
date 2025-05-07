@@ -1,4 +1,5 @@
-﻿using Exam.DataAccess.Repositories;
+﻿using Exam.DataAccess.Models;
+using Exam.DataAccess.Repositories;
 using Exam.DataAccess.Utils;
 using Exam.Utils;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace Exam.Logic
 {
@@ -17,6 +19,26 @@ namespace Exam.Logic
             var userWithRole = userRepository.GetUserRoleByEmail(email);
             return userWithRole?.RoleName;
         }
+        public RegistrationResult Registration(User? user, Passanger? passanger)
+        {
+            //if (user is null || passanger is null)
+            //    return RegistrationResult.InvalidData;
+
+            //if (!InputValidator.IsValidEmail(passanger.Email))
+            //    return RegistrationResult.InvalidEmail;
+
+            //if (userRepository.ExistsByEmail(passanger.Email))
+            //    return RegistrationResult.UserAlreadyExists;
+
+            userRepository.AddPassanger(passanger);
+            user.PassangerId = passanger.Id;
+            userRepository.AddUser(user);
+            MessageBox.Show(passanger.Id.ToString());
+            MessageBox.Show(user.ToString());
+            userRepository.AddRoleToUser(user.Id,2);
+            return RegistrationResult.Success;
+        }
+
         public LoginResult Login(string email, string password)
         {
 
@@ -27,7 +49,7 @@ namespace Exam.Logic
             if (user is null) return LoginResult.UserNotFound;
             if (user.IsLocked) return LoginResult.UserLocked;
 
-            if (!HashPassword(user.PasswordHash, password) || !InputValidator.IsValidPassword(password))
+            if (!CryptPassword.HashPassword(user.PasswordHash, password) || !InputValidator.IsValidPassword(password))
             {
                 user.FailedLoginAttempts++;
                 if (user.FailedLoginAttempts >= 5)
@@ -42,6 +64,6 @@ namespace Exam.Logic
             return LoginResult.Success;
         }
 
-        public bool HashPassword(string hash, string password) => CryptPassword.Sha256(password).Equals(hash);
+       
     }
 }
