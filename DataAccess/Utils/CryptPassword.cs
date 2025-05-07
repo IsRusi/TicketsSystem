@@ -20,5 +20,7 @@ namespace Exam.DataAccess.Utils
                 }
                 return hash;
             }
+        public static bool HashPassword(string hash, string password) => CryptPassword.Sha256(password).Equals(hash);
     }
+
 }

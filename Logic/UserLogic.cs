@@ -21,20 +21,18 @@ namespace Exam.Logic
         }
         public RegistrationResult Registration(User? user, Passanger? passanger)
         {
-            //if (user is null || passanger is null)
-            //    return RegistrationResult.InvalidData;
+            if (user is null || passanger is null)
+                return RegistrationResult.InvalidData;
 
-            //if (!InputValidator.IsValidEmail(passanger.Email))
-            //    return RegistrationResult.InvalidEmail;
+            if (!InputValidator.IsValidEmail(passanger.Email))
+                return RegistrationResult.InvalidEmail;
 
-            //if (userRepository.ExistsByEmail(passanger.Email))
-            //    return RegistrationResult.UserAlreadyExists;
+            if (userRepository.ExistsByEmail(passanger.Email))
+                return RegistrationResult.UserAlreadyExists;
 
             userRepository.AddPassanger(passanger);
             user.PassangerId = passanger.Id;
             userRepository.AddUser(user);
-            MessageBox.Show(passanger.Id.ToString());
-            MessageBox.Show(user.ToString());
             userRepository.AddRoleToUser(user.Id,2);
             return RegistrationResult.Success;
         }

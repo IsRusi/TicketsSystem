@@ -79,10 +79,24 @@ WHERE p.email = @Email
         {
             dataBaseConnection.OpenConnection();
             commands.Connection = dataBaseConnection.GetConnection();
-            string query = "SELECT COUNT(*) FROM users WHERE email = @email"; 
+            commands.CommandText = "SELECT COUNT(*) FROM passanger WHERE email = @email";
+            commands.Parameters.Clear();
             commands.Parameters.AddWithValue("@email", email);
-            return (long)commands.ExecuteScalar() > 0;
+
+            bool exists = false;
+            try
+            {
+                var result = commands.ExecuteScalar();
+                exists = Convert.ToInt64(result) > 0;
+            }
+            finally
+            {
+                dataBaseConnection.CloseConnection();
+            }
+
+            return exists;
         }
+
         public bool IsAccountLocked(string email)
         {
             dataBaseConnection.OpenConnection();
@@ -151,18 +165,45 @@ WHERE p.email = @Email
         {
             dataBaseConnection.OpenConnection();
             commands.Connection = dataBaseConnection.GetConnection();
-            commands.CommandText = @"insert into passanger(first_name,second_name,middle_name,email,phone,document_number,gender,birth_date) values(@passanger)";
+            commands.CommandText = @"
+             INSERT INTO passanger (first_name, second_name,surname, email, phone, document_number, gender, birth_date) 
+            VALUES (@first_name, @second_name,@middle_name, @email, @phone, @document_number, @gender, @birth_date) 
+            RETURNING passanger_id;";
+
             commands.Parameters.Clear();
-            commands.Parameters.AddWithValue("@passanger", passanger.ToString());
+
+
+            commands.Parameters.AddWithValue("@first_name", passanger.FirstName);
+            commands.Parameters.AddWithValue("@second_name", passanger.LastName);
+            commands.Parameters.AddWithValue("@middle_name", passanger.Surname);
+            commands.Parameters.AddWithValue("@email", passanger.Email);
+            commands.Parameters.AddWithValue("@phone", passanger.Phone);
+            commands.Parameters.AddWithValue("@document_number", passanger.DocumentNumber);
+            commands.Parameters.AddWithValue("@gender", passanger.Gender);
+            commands.Parameters.AddWithValue("@birth_date", passanger.BirthDate);
+
+            var result = commands.ExecuteScalar();
+            int passangerId = (int)result;
+            passanger.Id = passangerId;
+
+
             dataBaseConnection.CloseConnection();
         }
         public void AddUser(User user)
         {
             dataBaseConnection.OpenConnection();
             commands.Connection = dataBaseConnection.GetConnection();
-            commands.CommandText = @"insert into users(passanger_id,password_hash) values(@user)";
+            commands.CommandText = @"
+        INSERT INTO users (passanger_id, password_hash, failed_attempts, is_locked) 
+        VALUES (@passanger_id, @password_hash, @failed_attempts, @is_locked);";
+
             commands.Parameters.Clear();
-            commands.Parameters.AddWithValue("@user", user.ToString());
+
+            commands.Parameters.AddWithValue("@passanger_id", user.PassangerId);
+            commands.Parameters.AddWithValue("@password_hash", user.PasswordHash);
+            commands.Parameters.AddWithValue("@failed_attempts", user.FailedLoginAttempts);
+            commands.Parameters.AddWithValue("@is_locked", user.IsLocked);
+            commands.ExecuteNonQuery();
             dataBaseConnection.CloseConnection();
         }
     }
