@@ -25,7 +25,7 @@ namespace Exam.DataAccess.Repositories
         {
             dataBaseConnection.OpenConnection();
             commands.Connection = dataBaseConnection.GetConnection();
-            commands.CommandText = "select users.user_id,users.passanger_id,users.password_hash from users inner join passanger on passanger.passanger_id=users.passanger_id where passanger.email = @email";
+            commands.CommandText = "select users.user_id,users.passanger_id,users.password_hash,users.failed_attempts,users.is_locked  from users inner join passanger on passanger.passanger_id=users.passanger_id where passanger.email = @email";
             commands.Parameters.Clear();
             commands.Parameters.AddWithValue("@email", email);
             User? user = null;
@@ -36,8 +36,10 @@ namespace Exam.DataAccess.Repositories
                     user = new User
                     {
                         Id = Convert.ToInt32(reader["user_id"]),
-                        PassengerId = Convert.ToInt32(reader["passanger_id"]),
-                        PasswordHash = reader["password_hash"].ToString()
+                        PassangerId = Convert.ToInt32(reader["passanger_id"]),
+                        PasswordHash = reader["password_hash"].ToString(),
+                        FailedLoginAttempts = Convert.ToInt32(reader["failed_attempts"]),
+                        IsLocked= Convert.ToBoolean(reader["is_locked"])
                     };
                 }
             }
@@ -81,6 +83,70 @@ WHERE p.email = @Email
             commands.Parameters.AddWithValue("@email", email);
             return (long)commands.ExecuteScalar() > 0;
         }
+        public bool IsAccountLocked(string email)
+        {
+            dataBaseConnection.OpenConnection();
+            commands.Connection = dataBaseConnection.GetConnection();
+
+            commands.CommandText = @"
+        SELECT is_locked FROM users u
+        JOIN passanger p ON p.passanger_id = u.passanger_id
+        WHERE p.email = @Email";
+            commands.Parameters.Clear();
+            commands.Parameters.AddWithValue("@Email", email);
+
+            bool isLocked = false;
+            using (var reader = commands.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    isLocked = Convert.ToBoolean(reader["is_locked"]);
+                }
+            }
+
+            dataBaseConnection.CloseConnection();
+            return isLocked;
+        }
+        public void IncrementFailedAttempts(string email)
+        {
+            dataBaseConnection.OpenConnection();
+            commands.Connection = dataBaseConnection.GetConnection();
+            commands.CommandText = @"
+        UPDATE users
+        SET failed_attempts = failed_attempts + 1,
+            is_locked = CASE WHEN failed_attempts >= 5 THEN TRUE ELSE is_locked END
+        FROM passanger
+        WHERE passanger.passanger_id = users.passanger_id AND passanger.email = @Email";
+            commands.Parameters.Clear();
+            commands.Parameters.AddWithValue("@Email", email);
+            commands.ExecuteNonQuery();
+            dataBaseConnection.CloseConnection();
+        }
+        public void ResetFailedAttempts(string email)
+        {
+            dataBaseConnection.OpenConnection();
+            commands.Connection = dataBaseConnection.GetConnection();
+            commands.CommandText = @"
+        UPDATE users
+        SET failed_attempts = 0, is_locked = FALSE
+        FROM passanger
+        WHERE passanger.passanger_id = users.passanger_id AND passanger.email = @Email";
+            commands.Parameters.Clear();
+            commands.Parameters.AddWithValue("@Email", email);
+            commands.ExecuteNonQuery();
+            dataBaseConnection.CloseConnection();
+        }
+
+        public void AddRoleToUser(int userId,int roleId)
+        {
+            dataBaseConnection.OpenConnection();
+            commands.Connection = dataBaseConnection.GetConnection();
+            commands.CommandText = @"insert into usersrole(user_id,role_id) values(@userId,@roleId)";
+            commands.Parameters.Clear();
+            commands.Parameters.AddWithValue("@userId",userId);
+            commands.Parameters.AddWithValue("@roleId",roleId);
+            dataBaseConnection.CloseConnection();
+        }
         public void AddPassanger(Passanger passanger)
         {
             dataBaseConnection.OpenConnection();
@@ -94,7 +160,7 @@ WHERE p.email = @Email
         {
             dataBaseConnection.OpenConnection();
             commands.Connection = dataBaseConnection.GetConnection();
-            commands.CommandText = @"insert into users(passenger_id,password_hash) values(@user)";
+            commands.CommandText = @"insert into users(passanger_id,password_hash) values(@user)";
             commands.Parameters.Clear();
             commands.Parameters.AddWithValue("@user", user.ToString());
             dataBaseConnection.CloseConnection();

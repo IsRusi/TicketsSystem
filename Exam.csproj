@@ -9,14 +9,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Forms\Новая папка1\**" />
+    <Compile Remove="Forms\Новая папка\**" />
+    <EmbeddedResource Remove="Forms\Новая папка1\**" />
+    <EmbeddedResource Remove="Forms\Новая папка\**" />
+    <None Remove="Forms\Новая папка1\**" />
+    <None Remove="Forms\Новая папка\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Forms\Новая папка1\" />
-    <Folder Include="Forms\Новая папка\" />
     <Folder Include="keys\" />
   </ItemGroup>
 

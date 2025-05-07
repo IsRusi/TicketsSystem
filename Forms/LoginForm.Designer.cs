@@ -33,8 +33,9 @@
             buttonEnterToAccount = new Button();
             labelAuthoritation = new Label();
             panelAuthorization = new Panel();
-            linkToRegistration = new LinkLabel();
+            labelAttemptToLogin = new Label();
             linkToRecoveryPassword = new LinkLabel();
+            linkToRegistration = new LinkLabel();
             panelAuthorization.SuspendLayout();
             SuspendLayout();
             // 
@@ -50,16 +51,17 @@
             // 
             textBoxPasswordUsers.Location = new Point(25, 115);
             textBoxPasswordUsers.Name = "textBoxPasswordUsers";
+            textBoxPasswordUsers.PasswordChar = '*';
             textBoxPasswordUsers.PlaceholderText = "пароль";
             textBoxPasswordUsers.Size = new Size(258, 31);
-            textBoxPasswordUsers.TabIndex = 0;
+            textBoxPasswordUsers.TabIndex = 1;
             // 
             // buttonEnterToAccount
             // 
-            buttonEnterToAccount.Location = new Point(25, 165);
+            buttonEnterToAccount.Location = new Point(25, 177);
             buttonEnterToAccount.Name = "buttonEnterToAccount";
             buttonEnterToAccount.Size = new Size(258, 34);
-            buttonEnterToAccount.TabIndex = 1;
+            buttonEnterToAccount.TabIndex = 2;
             buttonEnterToAccount.Text = "Вход";
             buttonEnterToAccount.UseVisualStyleBackColor = true;
             buttonEnterToAccount.Click += buttonEnterToAccount_Click;
@@ -77,36 +79,48 @@
             // 
             panelAuthorization.BackColor = SystemColors.ControlLight;
             panelAuthorization.BorderStyle = BorderStyle.FixedSingle;
+            panelAuthorization.Controls.Add(labelAttemptToLogin);
             panelAuthorization.Controls.Add(linkToRecoveryPassword);
             panelAuthorization.Controls.Add(linkToRegistration);
             panelAuthorization.Controls.Add(labelAuthoritation);
             panelAuthorization.Controls.Add(buttonEnterToAccount);
             panelAuthorization.Controls.Add(textBoxPasswordUsers);
             panelAuthorization.Controls.Add(textBoxLoginUsers);
-            panelAuthorization.Location = new Point(257, 60);
+            panelAuthorization.Location = new Point(245, 57);
             panelAuthorization.Name = "panelAuthorization";
-            panelAuthorization.Size = new Size(309, 264);
+            panelAuthorization.Size = new Size(321, 267);
             panelAuthorization.TabIndex = 3;
+            // 
+            // labelAttemptToLogin
+            // 
+            labelAttemptToLogin.AutoSize = true;
+            labelAttemptToLogin.ForeColor = Color.Red;
+            labelAttemptToLogin.Location = new Point(25, 149);
+            labelAttemptToLogin.Name = "labelAttemptToLogin";
+            labelAttemptToLogin.Size = new Size(158, 25);
+            labelAttemptToLogin.TabIndex = 5;
+            labelAttemptToLogin.Text = "неверный пароль";
+            labelAttemptToLogin.Visible = false;
+            // 
+            // linkToRecoveryPassword
+            // 
+            linkToRecoveryPassword.AutoSize = true;
+            linkToRecoveryPassword.Location = new Point(144, 214);
+            linkToRecoveryPassword.Name = "linkToRecoveryPassword";
+            linkToRecoveryPassword.Size = new Size(145, 25);
+            linkToRecoveryPassword.TabIndex = 4;
+            linkToRecoveryPassword.TabStop = true;
+            linkToRecoveryPassword.Text = "Забыли пароль?";
             // 
             // linkToRegistration
             // 
             linkToRegistration.AutoSize = true;
-            linkToRegistration.Location = new Point(3, 214);
+            linkToRegistration.Location = new Point(16, 214);
             linkToRegistration.Name = "linkToRegistration";
             linkToRegistration.Size = new Size(113, 25);
             linkToRegistration.TabIndex = 3;
             linkToRegistration.TabStop = true;
             linkToRegistration.Text = "Регистрация";
-            // 
-            // linkToRecoveryPassword
-            // 
-            linkToRecoveryPassword.AutoSize = true;
-            linkToRecoveryPassword.Location = new Point(159, 214);
-            linkToRecoveryPassword.Name = "linkToRecoveryPassword";
-            linkToRecoveryPassword.Size = new Size(145, 25);
-            linkToRecoveryPassword.TabIndex = 3;
-            linkToRecoveryPassword.TabStop = true;
-            linkToRecoveryPassword.Text = "Забыли пароль?";
             // 
             // LoginForm
             // 
@@ -130,5 +144,6 @@
         private Panel panelAuthorization;
         private LinkLabel linkToRegistration;
         private LinkLabel linkToRecoveryPassword;
+        private Label labelAttemptToLogin;
     }
 }
