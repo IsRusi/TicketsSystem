@@ -14,10 +14,9 @@ namespace Exam.DataAccess.Models
         public int FailedLoginAttempts { get; set; }
         public bool IsLocked { get; set; }
         public User() { }
-        public User(int id,int passengerId, string passwordHash)
-        {  Id = id; PassangerId = passengerId;PasswordHash = passwordHash;}
-        public override string ToString()=>$"{PassangerId}, '{PasswordHash}'";
-    
+        public User(int id,int passengerId, string passwordHash, int failedLoginAttempts,bool isLocked)
+        {  Id = id; PassangerId = passengerId;PasswordHash = passwordHash;FailedLoginAttempts = failedLoginAttempts;IsLocked = isLocked; }
+      
 
     }
 }

@@ -29,10 +29,7 @@ namespace Exam.DataAccess.Models
             Gender = gender;
             BirthDate = birthDate;
         }
-        public override string ToString()
-        {
-            return $"'{LastName}', '{FirstName}', '{Surname}', '{Email}', '{Phone}', '{DocumentNumber}', '{Gender}', '{BirthDate:yyyy-MM-dd}'";
-        }
+        
 
     }
 }
