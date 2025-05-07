@@ -91,6 +91,17 @@
             panelAuthorization.Size = new Size(321, 267);
             panelAuthorization.TabIndex = 3;
             // 
+            // linkToRecoveryPassword
+            // 
+            linkToRecoveryPassword.AutoSize = true;
+            linkToRecoveryPassword.Location = new Point(159, 214);
+            linkToRecoveryPassword.Name = "linkToRecoveryPassword";
+            linkToRecoveryPassword.Size = new Size(145, 25);
+            linkToRecoveryPassword.TabIndex = 3;
+            linkToRecoveryPassword.TabStop = true;
+            linkToRecoveryPassword.Text = "Забыли пароль?";
+            // 
+            // linkToRegistration
             // labelAttemptToLogin
             // 
             labelAttemptToLogin.AutoSize = true;
@@ -111,6 +122,14 @@
             linkToRecoveryPassword.TabIndex = 4;
             linkToRecoveryPassword.TabStop = true;
             linkToRecoveryPassword.Text = "Забыли пароль?";
+            linkToRegistration.AutoSize = true;
+            linkToRegistration.Location = new Point(3, 214);
+            linkToRegistration.Name = "linkToRegistration";
+            linkToRegistration.Size = new Size(113, 25);
+            linkToRegistration.TabIndex = 3;
+            linkToRegistration.TabStop = true;
+            linkToRegistration.Text = "Регистрация";
+            linkToRegistration.LinkClicked += linkToRegistration_LinkClicked;
             // 
             // linkToRegistration
             // 
