@@ -22,20 +22,20 @@ public class UserValidator
             return ShowError("Введите корректное отчество.");
         if (string.IsNullOrEmpty(data.Gender))
             return ShowError("Выберите пол.");
+        if (!IsValidBirthDate(data.BirthDate))
+            return ShowError("Введите корректную дату рождения.");
         if (!IsValidPhone(data.Phone))
             return ShowError("Введите корректный номер телефона.");
         if (!IsValidEmail(data.Email))
             return ShowError("Введите корректный Email.");
-        if (!IsValidDocumentNumber(data.DocumentNumber))
-            return ShowError("Введите корректный номер документа (например, AB1234567).");
-        if (!IsValidBirthDate(data.BirthDate))
-            return ShowError("Введите корректную дату рождения.");
         var password = data.Password;
         var confirmPassword = data.ConfirmPassword;
         if (password != confirmPassword)
             return ShowError("Пароли не совпадают.");
         if (string.IsNullOrWhiteSpace(password))
             return ShowError("Введите пароль.");
+        if (!IsValidDocumentNumber(data.DocumentNumber))
+            return ShowError("Введите корректный номер документа (например, AB1234567).");
 
         var hashedPassword = CryptPassword.Sha256(password);
         return data;
