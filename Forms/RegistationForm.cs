@@ -30,80 +30,53 @@ namespace Exam.Forms
         {
             radioButtonGenderMale.Checked = true;
         }
-        private (string FirstName, string LastName, string Surname, string Email, string Phone, string Gender, string DocumentNumber, DateTime BirthDate, string Password)? GetRegistrationData()
+        private RegistrationData? GetRegistrationData()
         {
-            var firstName = textBoxName.Text;
-            var lastName = textBoxSecondName.Text;
-            var surname = textBoxSurname.Text;
-            var email = textBoxEmail.Text;
-            var phone = textBoxTelephoneNumber.Text;
-            var gender = radioButtonGenderMale.Checked ? radioButtonGenderMale.Text :
-                         radioButtonGenderFemale.Checked ? radioButtonGenderFemale.Text : string.Empty;
-            var documentNumber = textBoxDocumentNumber.Text;
-            var birthDate = dateTimePicker1.Value;
-
-            if (!UserValidator.IsValidName(firstName))
-                return ShowError("Введите корректное имя.");
-            if (!UserValidator.IsValidName(lastName))
-                return ShowError("Введите корректную фамилию.");
-            if (!UserValidator.IsValidName(surname))
-                return ShowError("Введите корректное отчество.");
-            if (string.IsNullOrEmpty(gender))
-                return ShowError("Выберите пол.");
-            if (!UserValidator.IsValidPhone(phone))
-                return ShowError("Введите корректный номер телефона.");
-            if (!UserValidator.IsValidEmail(email))
-                return ShowError("Введите корректный Email.");
-            if (!UserValidator.IsValidDocumentNumber(documentNumber))
-                return ShowError("Введите корректный номер документа (например, AB1234567).");
-            if (!UserValidator.IsValidBirthDate(birthDate))
-                return ShowError("Введите корректную дату рождения.");
-
-            var password = textBoxPassword.Text;
-            var confirmPassword = textBoxAgreePassword.Text;
-            if (password != confirmPassword)
-                return ShowError("Пароли не совпадают.");
-            if (string.IsNullOrWhiteSpace(password))
-                return ShowError("Введите пароль.");
-
-            var hashedPassword = CryptPassword.Sha256(password);
-            return (firstName, lastName, surname, email, phone, gender, documentNumber, birthDate, hashedPassword);
+            var data = new RegistrationData
+            {
+                FirstName = textBoxName.Text,
+                LastName = textBoxSecondName.Text,
+                Surname = textBoxSurname.Text,
+                Email = textBoxEmail.Text,
+                Phone = textBoxTelephoneNumber.Text,
+                Gender = radioButtonGenderMale.Checked ? radioButtonGenderMale.Text :
+                         radioButtonGenderFemale.Checked ? radioButtonGenderFemale.Text : "",
+                DocumentNumber = textBoxDocumentNumber.Text,
+                BirthDate = dateTimePicker1.Value,
+                Password = textBoxPassword.Text,
+                ConfirmPassword = textBoxAgreePassword.Text
+            };
+            return data;
         }
-
-        private (string, string, string, string, string, string, string, DateTime, string)? ShowError(string message)
+        private void ClearData()
         {
-            MessageBox.Show(message);
-            return null;
+            textBoxAgreePassword.Text = string.Empty;
+            textBoxDocumentNumber.Text = string.Empty;
+            textBoxEmail.Text = string.Empty;
+            textBoxName.Text = string.Empty;
+            textBoxPassword.Text = string.Empty;
+            textBoxSecondName.Text = string.Empty;
+            textBoxSurname.Text = string.Empty;
+            textBoxTelephoneNumber.Text = string.Empty;
+            dateTimePicker1.Value= DateTime.Today;
         }
-
+        
         private void RegistrationFields()
         {
             var input = GetRegistrationData();
             if (input == null)
                 return;
 
-            var (firstName, lastName, surname, email, phone, gender, documentNumber, birthDate, password) = input.Value;
+            var result = UserValidator.IsValidData(input);
 
-            var passanger = new Passanger
+            var isRegistrated =userService.Registration(input);
+            if (isRegistrated == RegistrationResult.Success)
             {
-                FirstName = firstName,
-                LastName = lastName,
-                Surname = surname,
-                Email = email,
-                Phone = phone,
-                Gender = gender,
-                DocumentNumber = documentNumber,
-                BirthDate = birthDate
-            };
-
-            var user = new User
-            {
-                PasswordHash = password,
-                FailedLoginAttempts = 0,
-                IsLocked = false
-            };
-
-            MessageBox.Show(userService.Registration(user, passanger).ToString());
+                MessageBox.Show("вы успешно зарегистрировались");
+                ClearData();
+            }
+            else if (isRegistrated == RegistrationResult.UserAlreadyExists)
+                MessageBox.Show("такой пользователь уже существует");
         }
         private void linkLabelToAuthorization_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {

@@ -25,7 +25,7 @@ namespace Exam.DataAccess.Repositories
         {
             dataBaseConnection.OpenConnection();
             commands.Connection = dataBaseConnection.GetConnection();
-            commands.CommandText = "select users.user_id,users.passanger_id,users.password_hash,users.failed_attempts,users.is_locked  from users inner join passanger on passanger.passanger_id=users.passanger_id where passanger.email = @email";
+            commands.CommandText = "select users.* from users inner join passanger on passanger.passanger_id=users.passanger_id where passanger.email = @email";
             commands.Parameters.Clear();
             commands.Parameters.AddWithValue("@email", email);
             User? user = null;
@@ -41,7 +41,7 @@ namespace Exam.DataAccess.Repositories
                         FailedLoginAttempts = Convert.ToInt32(reader["failed_attempts"]),
                         IsLocked= Convert.ToBoolean(reader["is_locked"])
                     };
-                }
+                    }
             }
             dataBaseConnection.CloseConnection();
         return user;
@@ -75,6 +75,18 @@ WHERE p.email = @Email
             dataBaseConnection.CloseConnection();
             return user;
         }
+        public bool ChangePasswordByEmail(string email,string password)
+        {
+            dataBaseConnection.OpenConnection();
+            commands.Connection= dataBaseConnection.GetConnection();
+            commands.CommandText = "UPDATE users SET password_hash = @new_password FROM passanger\r\n WHERE passanger.passanger_id = users.passanger_id AND passanger.email = @Email;";
+            commands.Parameters.Clear();
+            commands.Parameters.AddWithValue("@Email",email);
+            commands.Parameters.AddWithValue("@new_password",password);
+            var isSuccess = commands.ExecuteNonQuery() > 0;
+            dataBaseConnection.CloseConnection();
+            return isSuccess;
+        }
         public bool ExistsByEmail(string email)
         {
             dataBaseConnection.OpenConnection();
@@ -97,6 +109,21 @@ WHERE p.email = @Email
             return exists;
         }
 
+        public bool UnlockAccount(string email)
+        {
+            dataBaseConnection.OpenConnection();
+            commands.Connection = dataBaseConnection.GetConnection();
+
+            commands.CommandText = @"
+        update users set users.is_locked=false,users.failed_attempts=0
+        FROM users
+        JOIN passanger p ON p.passanger_id = users.passanger_id
+        WHERE p.email = @Email";
+            commands.Parameters.Clear();
+            commands.Parameters.AddWithValue("@Email", email);
+                dataBaseConnection.CloseConnection();
+            return false;
+        }
         public bool IsAccountLocked(string email)
         {
             dataBaseConnection.OpenConnection();
