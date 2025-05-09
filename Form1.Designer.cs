@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TicketSystem));
             textBoxFrom = new TextBox();
             textBoxWhere = new TextBox();
             dateTimePicker1 = new DateTimePicker();
@@ -141,9 +142,9 @@
             pictureLogin.Image = Properties.Resources.login_icon;
             pictureLogin.ImageLocation = "";
             pictureLogin.InitialImage = null;
-            pictureLogin.Location = new Point(876, 0);
+            pictureLogin.Location = new Point(875, 0);
             pictureLogin.Name = "pictureLogin";
-            pictureLogin.Size = new Size(42, 42);
+            pictureLogin.Size = new Size(43, 41);
             pictureLogin.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureLogin.TabIndex = 0;
             pictureLogin.TabStop = false;
@@ -156,8 +157,9 @@
             ClientSize = new Size(938, 450);
             Controls.Add(panel1);
             Controls.Add(panelSearchRouteBar);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "TicketSystem";
-            Text = "Ticket System";
+            Text = "Система билетов";
             panelSearchRouteBar.ResumeLayout(false);
             panelSearchRouteBar.PerformLayout();
             panel1.ResumeLayout(false);

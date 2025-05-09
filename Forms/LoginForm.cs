@@ -39,11 +39,17 @@ namespace Exam.Forms
                 labelAttemptToLogin.Text = "неверный пароль";
             }
         }
+        private void linkToRecoverPassword_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Close();
+            RecoveryPasswordForm recoveryPasswordForm = new();
+            recoveryPasswordForm.Show();
+        }
         private void linkToRegistration_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Close();
-            RegistationForm fro = new();
-            fro.Show();
+            RegistationForm registationForm = new();
+            registationForm.Show();
         }
     }
 }

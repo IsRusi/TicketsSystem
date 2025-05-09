@@ -112,6 +112,7 @@
             linkToRecoveryPassword.TabIndex = 4;
             linkToRecoveryPassword.TabStop = true;
             linkToRecoveryPassword.Text = "Забыли пароль?";
+            linkToRecoveryPassword.LinkClicked += linkToRecoverPassword_LinkClicked;
             // 
             // linkToRegistration
             // 

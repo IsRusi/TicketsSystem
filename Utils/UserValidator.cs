@@ -1,8 +1,46 @@
-﻿using System;
+﻿using Exam.DataAccess.Models;
+using Exam.DataAccess.Repositories;
+using Exam.DataAccess.Utils;
+using Exam.Utils;
+using System;
 using System.Text.RegularExpressions;
 
 public class UserValidator
 {
+    private static RegistrationData? ShowError(string message)
+    {
+        MessageBox.Show(message);
+        return null;
+    }
+    public static RegistrationData? IsValidData(RegistrationData data)
+    {
+        if (!IsValidName(data.FirstName))
+            return ShowError("Введите корректное имя.");
+        if (!IsValidName(data.LastName))
+            return ShowError("Введите корректную фамилию.");
+        if (!IsValidName(data.Surname))
+            return ShowError("Введите корректное отчество.");
+        if (string.IsNullOrEmpty(data.Gender))
+            return ShowError("Выберите пол.");
+        if (!IsValidPhone(data.Phone))
+            return ShowError("Введите корректный номер телефона.");
+        if (!IsValidEmail(data.Email))
+            return ShowError("Введите корректный Email.");
+        if (!IsValidDocumentNumber(data.DocumentNumber))
+            return ShowError("Введите корректный номер документа (например, AB1234567).");
+        if (!IsValidBirthDate(data.BirthDate))
+            return ShowError("Введите корректную дату рождения.");
+        var password = data.Password;
+        var confirmPassword = data.ConfirmPassword;
+        if (password != confirmPassword)
+            return ShowError("Пароли не совпадают.");
+        if (string.IsNullOrWhiteSpace(password))
+            return ShowError("Введите пароль.");
+
+        var hashedPassword = CryptPassword.Sha256(password);
+        return data;
+    }
+   
     public static bool IsDigitsInString(string text)
     {
         foreach(var letter in text)
