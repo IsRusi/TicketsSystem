@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic.ApplicationServices;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
@@ -11,8 +10,9 @@ namespace Exam
     {
         public TicketSystem()
         {
-
             InitializeComponent();
+            UserProfileForm userProfileForm= new UserProfileForm();
+            userProfileForm.ShowDialog();
             InitializeMinDateTimePicker();
             InitializeMaxDateTimePicker();
             InitializeDateCustomFormat();

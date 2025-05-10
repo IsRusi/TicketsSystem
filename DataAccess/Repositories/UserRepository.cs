@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Exam.DataAccess.Utils;
 using Exam.DataAccess.Repositories;
 using Npgsql;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Exam.DataAccess.Models;
 using System.CodeDom;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
@@ -17,221 +16,226 @@ namespace Exam.DataAccess.Repositories
     public class UserRepository
     {
         private DatabaseConnection dataBaseConnection = new();
-        private NpgsqlCommand commands = new();
+        private PassangerRepository passangerRepository = new();
         public UserRepository()
         {
         }
         public User? GetUserByEmail(string email)
         {
             dataBaseConnection.OpenConnection();
-            commands.Connection = dataBaseConnection.GetConnection();
-            commands.CommandText = "select users.* from users inner join passanger on passanger.passanger_id=users.passanger_id where passanger.email = @email";
-            commands.Parameters.Clear();
-            commands.Parameters.AddWithValue("@email", email);
-            User? user = null;
-            using (var reader = commands.ExecuteReader())
+            using (var commands = new NpgsqlCommand())
             {
-                while (reader.Read())
+                commands.Connection = dataBaseConnection.GetConnection();
+                commands.CommandText = "select users.* from users inner join passanger on passanger.passanger_id=users.passanger_id where passanger.email = @email";
+                commands.Parameters.Clear();
+                commands.Parameters.AddWithValue("@email", email);
+                User? user = null;
+                using (var reader = commands.ExecuteReader())
                 {
-                    user = new User
+                    while (reader.Read())
                     {
-                        Id = Convert.ToInt32(reader["user_id"]),
-                        PassangerId = Convert.ToInt32(reader["passanger_id"]),
-                        PasswordHash = reader["password_hash"].ToString(),
-                        FailedLoginAttempts = Convert.ToInt32(reader["failed_attempts"]),
-                        IsLocked= Convert.ToBoolean(reader["is_locked"])
-                    };
+                        user = new User
+                        {
+                            Id = Convert.ToInt32(reader["user_id"]),
+                            PassangerId = Convert.ToInt32(reader["passanger_id"]),
+                            PasswordHash = reader["password_hash"].ToString(),
+                            FailedLoginAttempts = Convert.ToInt32(reader["failed_attempts"]),
+                            IsLocked = Convert.ToBoolean(reader["is_locked"])
+                        };
                     }
+                }
+                dataBaseConnection.CloseConnection();
+                return user;
             }
-            dataBaseConnection.CloseConnection();
-        return user;
         }
         public UsersRole? GetUserRoleByEmail(string email)
         {
             dataBaseConnection.OpenConnection();
-            commands.Connection = dataBaseConnection.GetConnection();
-            commands.CommandText = @"SELECT u.user_id, r.role_name
+            using (var commands = new NpgsqlCommand())
+            {
+                commands.Connection = dataBaseConnection.GetConnection();
+                commands.CommandText = @"SELECT u.user_id, r.role_name
 FROM users u
 JOIN usersrole ur ON u.user_id = ur.user_id
 JOIN role r ON ur.role_id = r.role_id
 JOIN passanger p ON p.passanger_id = u.passanger_id
 WHERE p.email = @Email
 ";
-            commands.Parameters.Clear();
-            commands.Parameters.AddWithValue("@Email", email);
-            UsersRole? user = null;
-            using (var reader = commands.ExecuteReader())
-            {
-                if (reader.Read())
+                commands.Parameters.Clear();
+                commands.Parameters.AddWithValue("@Email", email);
+                UsersRole? user = null;
+                using (var reader = commands.ExecuteReader())
                 {
-                    user = new UsersRole
+                    if (reader.Read())
                     {
-                        Id = Convert.ToInt32(reader["user_id"]),
-                        RoleName = reader["role_name"].ToString()
-                    };
+                        user = new UsersRole
+                        {
+                            Id = Convert.ToInt32(reader["user_id"]),
+                            RoleName = reader["role_name"].ToString()
+                        };
+                    }
                 }
-            }
 
-            dataBaseConnection.CloseConnection();
-            return user;
+                dataBaseConnection.CloseConnection();
+                return user;
+            }
         }
-        public bool ChangePasswordByEmail(string email,string password)
+        public bool ChangePasswordByEmail(string email, string password)
         {
             dataBaseConnection.OpenConnection();
-            commands.Connection= dataBaseConnection.GetConnection();
-            commands.CommandText = "UPDATE users SET password_hash = @new_password FROM passanger\r\n WHERE passanger.passanger_id = users.passanger_id AND passanger.email = @Email;";
-            commands.Parameters.Clear();
-            commands.Parameters.AddWithValue("@Email",email);
-            commands.Parameters.AddWithValue("@new_password",password);
-            var isSuccess = commands.ExecuteNonQuery() > 0;
-            dataBaseConnection.CloseConnection();
-            return isSuccess;
+            using (var commands = new NpgsqlCommand())
+            {
+                commands.Connection = dataBaseConnection.GetConnection();
+                commands.CommandText = "UPDATE users SET password_hash = @new_password FROM passanger\r\n WHERE passanger.passanger_id = users.passanger_id AND passanger.email = @Email;";
+                commands.Parameters.Clear();
+                commands.Parameters.AddWithValue("@Email", email);
+                commands.Parameters.AddWithValue("@new_password", password);
+                var isSuccess = commands.ExecuteNonQuery() > 0;
+                dataBaseConnection.CloseConnection();
+                return isSuccess;
+            }
         }
         public bool ExistsByEmail(string email)
         {
             dataBaseConnection.OpenConnection();
-            commands.Connection = dataBaseConnection.GetConnection();
-            commands.CommandText = "SELECT COUNT(*) FROM passanger WHERE email = @email";
-            commands.Parameters.Clear();
-            commands.Parameters.AddWithValue("@email", email);
-
-            bool exists = false;
-            try
+            using (var commands = new NpgsqlCommand())
             {
-                var result = commands.ExecuteScalar();
-                exists = Convert.ToInt64(result) > 0;
-            }
-            finally
-            {
-                dataBaseConnection.CloseConnection();
-            }
+                commands.Connection = dataBaseConnection.GetConnection();
+                commands.CommandText = "SELECT COUNT(*) FROM passanger WHERE email = @email";
+                commands.Parameters.Clear();
+                commands.Parameters.AddWithValue("@email", email);
 
-            return exists;
+                bool exists = false;
+                try
+                {
+                    var result = commands.ExecuteScalar();
+                    exists = Convert.ToInt64(result) > 0;
+                }
+                finally
+                {
+                    dataBaseConnection.CloseConnection();
+                }
+
+                return exists;
+            }
         }
-
         public bool UnlockAccount(string email)
         {
             dataBaseConnection.OpenConnection();
-            commands.Connection = dataBaseConnection.GetConnection();
+            using (var commands = new NpgsqlCommand())
+            {
+                commands.Connection = dataBaseConnection.GetConnection();
 
-            commands.CommandText = @"
+                commands.CommandText = @"
         update users set users.is_locked=false,users.failed_attempts=0
         FROM users
         JOIN passanger p ON p.passanger_id = users.passanger_id
         WHERE p.email = @Email";
-            commands.Parameters.Clear();
-            commands.Parameters.AddWithValue("@Email", email);
+                commands.Parameters.Clear();
+                commands.Parameters.AddWithValue("@Email", email);
+
+                var updated = commands.ExecuteNonQuery();
                 dataBaseConnection.CloseConnection();
-            return false;
+
+                return updated > 0;
+            }
         }
         public bool IsAccountLocked(string email)
         {
             dataBaseConnection.OpenConnection();
-            commands.Connection = dataBaseConnection.GetConnection();
+            using (var commands = new NpgsqlCommand())
+            {
+                commands.Connection = dataBaseConnection.GetConnection();
 
-            commands.CommandText = @"
+                commands.CommandText = @"
         SELECT is_locked FROM users u
         JOIN passanger p ON p.passanger_id = u.passanger_id
         WHERE p.email = @Email";
-            commands.Parameters.Clear();
-            commands.Parameters.AddWithValue("@Email", email);
+                commands.Parameters.Clear();
+                commands.Parameters.AddWithValue("@Email", email);
 
-            bool isLocked = false;
-            using (var reader = commands.ExecuteReader())
-            {
-                if (reader.Read())
+                bool isLocked = false;
+                using (var reader = commands.ExecuteReader())
                 {
-                    isLocked = Convert.ToBoolean(reader["is_locked"]);
+                    if (reader.Read())
+                    {
+                        isLocked = Convert.ToBoolean(reader["is_locked"]);
+                    }
                 }
-            }
 
-            dataBaseConnection.CloseConnection();
-            return isLocked;
+                dataBaseConnection.CloseConnection();
+                return isLocked;
+            }
         }
         public void IncrementFailedAttempts(string email)
         {
             dataBaseConnection.OpenConnection();
-            commands.Connection = dataBaseConnection.GetConnection();
-            commands.CommandText = @"
+            using (var commands = new NpgsqlCommand())
+            {
+                commands.Connection = dataBaseConnection.GetConnection();
+                commands.CommandText = @"
         UPDATE users
         SET failed_attempts = failed_attempts + 1,
             is_locked = CASE WHEN failed_attempts >= 5 THEN TRUE ELSE is_locked END
         FROM passanger
         WHERE passanger.passanger_id = users.passanger_id AND passanger.email = @Email";
-            commands.Parameters.Clear();
-            commands.Parameters.AddWithValue("@Email", email);
-            commands.ExecuteNonQuery();
-            dataBaseConnection.CloseConnection();
+                commands.Parameters.Clear();
+                commands.Parameters.AddWithValue("@Email", email);
+                commands.ExecuteNonQuery();
+                dataBaseConnection.CloseConnection();
+            }
         }
         public void ResetFailedAttempts(string email)
         {
             dataBaseConnection.OpenConnection();
-            commands.Connection = dataBaseConnection.GetConnection();
-            commands.CommandText = @"
+            using (var commands = new NpgsqlCommand())
+            {
+                commands.Connection = dataBaseConnection.GetConnection();
+                commands.CommandText = @"
         UPDATE users
         SET failed_attempts = 0, is_locked = FALSE
         FROM passanger
         WHERE passanger.passanger_id = users.passanger_id AND passanger.email = @Email";
-            commands.Parameters.Clear();
-            commands.Parameters.AddWithValue("@Email", email);
-            commands.ExecuteNonQuery();
-            dataBaseConnection.CloseConnection();
+                commands.Parameters.Clear();
+                commands.Parameters.AddWithValue("@Email", email);
+                commands.ExecuteNonQuery();
+                dataBaseConnection.CloseConnection();
+            }
         }
 
-        public void AddRoleToUser(int userId,int roleId)
+        public void AddRoleToUser(int userId, int roleId)
         {
             dataBaseConnection.OpenConnection();
-            commands.Connection = dataBaseConnection.GetConnection();
-            commands.CommandText = @"insert into usersrole(user_id,role_id) values(@userId,@roleId)";
-            commands.Parameters.Clear();
-            commands.Parameters.AddWithValue("@userId",userId);
-            commands.Parameters.AddWithValue("@roleId",roleId);
-            dataBaseConnection.CloseConnection();
+            using (var commands = new NpgsqlCommand())
+            {
+                commands.Connection = dataBaseConnection.GetConnection();
+                commands.CommandText = @"insert into usersrole(user_id,role_id) values(@userId,@roleId)";
+                commands.Parameters.Clear();
+                commands.Parameters.AddWithValue("@userId", userId);
+                commands.Parameters.AddWithValue("@roleId", roleId);
+                dataBaseConnection.CloseConnection();
+            }
         }
-        public void AddPassanger(Passanger passanger)
-        {
-            dataBaseConnection.OpenConnection();
-            commands.Connection = dataBaseConnection.GetConnection();
-            commands.CommandText = @"
-             INSERT INTO passanger (first_name, second_name,surname, email, phone, document_number, gender, birth_date) 
-            VALUES (@first_name, @second_name,@middle_name, @email, @phone, @document_number, @gender, @birth_date) 
-            RETURNING passanger_id;";
-
-            commands.Parameters.Clear();
-
-
-            commands.Parameters.AddWithValue("@first_name", passanger.FirstName);
-            commands.Parameters.AddWithValue("@second_name", passanger.LastName);
-            commands.Parameters.AddWithValue("@middle_name", passanger.Surname);
-            commands.Parameters.AddWithValue("@email", passanger.Email);
-            commands.Parameters.AddWithValue("@phone", passanger.Phone);
-            commands.Parameters.AddWithValue("@document_number", passanger.DocumentNumber);
-            commands.Parameters.AddWithValue("@gender", passanger.Gender);
-            commands.Parameters.AddWithValue("@birth_date", passanger.BirthDate);
-
-            var result = commands.ExecuteScalar();
-            int passangerId = (int)result;
-            passanger.Id = passangerId;
-
-
-            dataBaseConnection.CloseConnection();
-        }
+        
         public void AddUser(User user)
         {
             dataBaseConnection.OpenConnection();
-            commands.Connection = dataBaseConnection.GetConnection();
-            commands.CommandText = @"
+            using (var commands = new NpgsqlCommand())
+            {
+                commands.Connection = dataBaseConnection.GetConnection();
+                commands.CommandText = @"
         INSERT INTO users (passanger_id, password_hash, failed_attempts, is_locked) 
         VALUES (@passanger_id, @password_hash, @failed_attempts, @is_locked);";
 
-            commands.Parameters.Clear();
+                commands.Parameters.Clear();
 
-            commands.Parameters.AddWithValue("@passanger_id", user.PassangerId);
-            commands.Parameters.AddWithValue("@password_hash", user.PasswordHash);
-            commands.Parameters.AddWithValue("@failed_attempts", user.FailedLoginAttempts);
-            commands.Parameters.AddWithValue("@is_locked", user.IsLocked);
-            commands.ExecuteNonQuery();
-            dataBaseConnection.CloseConnection();
+                commands.Parameters.AddWithValue("@passanger_id", user.PassangerId);
+                commands.Parameters.AddWithValue("@password_hash", user.PasswordHash);
+                commands.Parameters.AddWithValue("@failed_attempts", user.FailedLoginAttempts);
+                commands.Parameters.AddWithValue("@is_locked", user.IsLocked);
+                commands.ExecuteNonQuery();
+                dataBaseConnection.CloseConnection();
+            }
         }
     }
 }

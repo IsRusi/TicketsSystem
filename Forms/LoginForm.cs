@@ -38,6 +38,10 @@ namespace Exam.Forms
                 labelAttemptToLogin.Visible = true;
                 labelAttemptToLogin.Text = "неверный пароль";
             }
+            else if (isLogin==LoginResult.Success)
+            {
+                Close();
+            }
         }
         private void linkToRecoverPassword_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
